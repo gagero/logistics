@@ -9,7 +9,8 @@ arguments
     input_file string = "hungary-261014.osm.pbf"
     output_file string = "hungarymap.mat"
 end
-T = readgeotable(input_file, "VariableNamingRule", "modify");
-save(output_file, "T", "-v7.3");
+lines = readgeotable(input_file, "VariableNamingRule", "modify", "Layer", "lines");
+points = readgeotable(input_file, "VariableNamingRule", "modify", "Layer", "points");
+save(output_file, "lines", "points", "-v7.3");
 f = matfile(output_file, Writable=false);
 end
