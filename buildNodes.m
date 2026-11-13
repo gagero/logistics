@@ -1,13 +1,13 @@
 %[text] Brief summary of this function.
 %[text] Detailed explanation of this function.
-function [graph, roads] = buildNodes(map, opts)
+function [G, roads] = buildNodes(map, opts)
     arguments (Input)
         map struct
         opts.Classes (1,:) string = ["motorway", "motorway_link", "primary", "primary_link", "residential", "service", "secondary", ...
             "secondary_link", "tertiary", "tertiary_link", "trunk", "road"]
     end
     arguments (Output)
-        graph {mustBeDigraphorNavGraph}
+        G {mustBeDigraphorNavGraph}
         roads table
     end
     keptRows = ismember(map.lines.highway, opts.Classes);
@@ -74,11 +74,11 @@ function [graph, roads] = buildNodes(map, opts)
 	WY = [wy(canF); wy(canB)];
 	E = table([s t], W, WY, 'VariableNames', {'EndNodes','Weight','Way'});
 	N = table(lat(kIdx(firstOcc)), lon(kIdx(firstOcc)), 'VariableNames', {'Lat','Lon'});
-	graph = digraph(E, N);
+	G = digraph(E, N);
 	%% 7. Keep the largest strongly connected component
-	bins = conncomp(graph, "Type", "strong");
+	bins = conncomp(G, "Type", "strong");
 	[~, big] = max(accumarray(bins(:), 1));
-	graph = subgraph(graph, bins == big);
+	G = subgraph(G, bins == big);
 end
 
 function mustBeDigraphorNavGraph(value)
